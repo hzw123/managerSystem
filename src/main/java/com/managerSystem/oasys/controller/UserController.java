@@ -3,6 +3,7 @@ package com.managerSystem.oasys.controller;
 import com.managerSystem.oasys.domain.User;
 import com.managerSystem.oasys.enums.AllEnum;
 import com.managerSystem.oasys.repository.UserRepository;
+import com.managerSystem.oasys.utils.PageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -71,6 +72,6 @@ public class UserController {
                 query.where(cb.and(list.toArray(predicates)));
                 return null;
             }
-        },pageable);
+        }, PageUtil.getPageRequest(pageable));
     }
 }

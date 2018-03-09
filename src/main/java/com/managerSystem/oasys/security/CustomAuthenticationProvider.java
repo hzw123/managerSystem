@@ -23,7 +23,6 @@ import java.util.Set;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
-
     private final Logger logger= LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -32,34 +31,37 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication auth) throws AuthenticationException{
         String name=auth.getName();
         String passWord=auth.getCredentials().toString();
-        logger.debug("username is "+name);
         User user=userRepository.findByName(name);
+        System.out.println(user.toString());
         if(user==null || name ==null || passWord == null){
             throw new BadCredentialsException("Username not found");
         }
-
         if(!user.getStatus().equals(AllEnum.USING)){
             throw new BadCredentialsException("user stop");
         }
 
         BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
 
-        if(!bCryptPasswordEncoder.matches(passWord,user.getPassWord())){
+//        if(bCryptPasswordEncoder.matches(passWord,user.getPassWord())){
+//            throw new BadCredentialsException("Wrong passWord");
+//        }
+
+        if(!passWord.equals(user.getPassWord())){
             throw new BadCredentialsException("Wrong passWord");
         }
 
-        Set<Role> set=user.getRoles();
+//        Set<Role> set=user.getRoles();
 
-        if(set.isEmpty()){
-            throw new BadCredentialsException("Role info is missing");
-        }
+//        if(set.isEmpty()){
+//            throw new BadCredentialsException("Role info is missing");
+//        }
 
         List<GrantedAuthority> grantedAuthorities=new ArrayList<GrantedAuthority>();
 
-        for (Role role:set) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-            logger.debug("Role is " + name + ", " + role.getName());
-        }
+//        for (Role role:set) {
+//            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+//            logger.debug("Role is " + name + ", " + role.getName());
+//        }
 
         return new UsernamePasswordAuthenticationToken(name,passWord,grantedAuthorities);
     }
